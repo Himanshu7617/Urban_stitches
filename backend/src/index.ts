@@ -1,5 +1,6 @@
 import express, {Express} from 'express';
 import dotenv from 'dotenv';
+import adminRoutes from './routes/AdminRoutes';
 import userRoutes from './routes/UserRoutes';
 import path from 'path';
 dotenv.config();
@@ -12,7 +13,8 @@ app.use('/uploads',express.static('./uploads'));
 app.use(express.json());
 
 
-app.use('/', userRoutes);
+app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
 
 
 app.listen(port, () => {

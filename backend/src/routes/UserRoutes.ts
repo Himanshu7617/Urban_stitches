@@ -1,37 +1,8 @@
-import {Router, Request, Response} from 'express'
-import adminController from '../controllers/AdminController';
-import multer from 'multer';
-
+import {Router} from 'express'
+import userController from '../controllers/UserController';
 
 const router = Router();
-const storage = multer.diskStorage({
-    destination : (req, file, cb) => {
-        return cb(null, './uploads');
-    },
-    filename : (req, file, cb) => {
-        return cb(null, `${Date.now() }-${file.originalname}`);
-    }
-})
 
-const uploads = multer({storage : storage});
-router.get('/', (req, res)=> {
-    res.send('whats wup');
-})
-router.post('/product',uploads.array('images',3), adminController.addNewProduct );
+router.post('/adduser', userController.createUser);
 
 export default router;
-
-
-/**
- * tasks we have to do 
- * 
- * ADMIN 
- *      store new products
- *      delete a product
- *      edit a product entry
- *      
- *      get all products -  DONEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
- *      
- *      get all orders
- *      
- */
