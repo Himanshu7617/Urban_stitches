@@ -1,8 +1,9 @@
+import Dashboard from "./features/dashboard/dashboard";
 
-const App = () => {
+export default function App() {
   return (
-    <div>App</div>
-  )
+    <header>
+      <Dashboard></Dashboard>
+    </header>
+  );
 }
-
-export default App

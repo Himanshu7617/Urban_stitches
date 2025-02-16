@@ -39,7 +39,6 @@ model Product {
   description String?
   price       String
   images      String[]
-  order       Order?
   quantity    Int
   cart        UserCart[]
 }
@@ -47,9 +46,8 @@ model Product {
 model Order {
   id          String   @id @default(uuid())
   User        User     @relation(fields: [userId], references: [id])
-  userId      String   @unique
-  Product     Product  @relation(fields: [productId], references: [id])
-  productId   String   @unique
+  userId      String   
+  productId   String   
   quantity    Int
   totalPrice  Int
   orderedDate DateTime @default(now())

@@ -1,6 +1,6 @@
 import {prisma} from '../db/db';
 import {Request, Response} from 'express';
-import { Product } from '../types/Types';
+import { Prisma } from '@prisma/client';
 
 
 
@@ -38,11 +38,11 @@ const adminController = {
             //store that array into the database;
             
 
-            const newProduct : Product = {
+            const newProduct : Prisma.ProductCreateInput = {
                 name : req.body.name,
                 description : req.body.description,
                 price : req.body.price,
-                quantity : req.body.quantity
+                quantity : Number(req.body.quantity)
             }
 
             const success = await prisma.product.create({
@@ -50,10 +50,10 @@ const adminController = {
             });
 
             const newProductID = success.id;
-
-
+            
             const filesArray = Array.isArray(req.files) ? req.files : Object.values(req.files || {}).flat();
             const newProductFilepaths = filesArray.map(i => newProductID+'---'+i.filename);
+            
             
             
             let result = await prisma.product.update({
@@ -68,7 +68,7 @@ const adminController = {
 
             
             if(success && result ){
-                res.status(200).json({message : "Product added successfully", addedProduct : success });
+                res.status(200).json({message : "Product added successfully", addedProduct : result });
 
             }else{
                 res.status(404).json({message : "some issue in adding new product"});
