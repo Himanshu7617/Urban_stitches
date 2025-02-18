@@ -1,7 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { Product, NewProduct } from "./productSlice";
 
+export type RazorPayOptions = {
+    amount : number, 
+    currency : string, 
+    receipt : string,
+}
 
+export type PaymentValidationParameters = {
+    razorpay_order_id : string, 
+    razorpay_payment_id : string, 
+    razorpay_signature : string
+}
 
 
 export const apiSlice = createApi({   
@@ -25,8 +35,22 @@ export const apiSlice = createApi({
             query : (id) => ({
                 url : `user/product/${id}`,
             }),
-        })
+        }),
+        getOrderId : builder.mutation<any, RazorPayOptions>({
+            query : (options) => ({
+                url : '/user/razorpay', 
+                method: 'POST', 
+                body : options
+            }),
+        }),
+        validatePayment : builder.mutation<any, PaymentValidationParameters>({
+            query: (options) => ({
+                url : '/razorpay/validate', 
+                method : "POST", 
+                body : options
+            }),
+        }) 
     })  
 })
 
-export const { useGetAdminProductsQuery, useAddNewProductMutation, useGetProductByIdQuery }  = apiSlice;
+export const { useGetAdminProductsQuery, useAddNewProductMutation, useGetProductByIdQuery, useGetOrderIdMutation , useValidatePaymentMutation}  = apiSlice;

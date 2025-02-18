@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../db/db";
 import { Prisma } from "@prisma/client";
-
+import Razorpay from "razorpay";
+import dotenv from "dotenv";
+import crypto from 'crypto'
+dotenv.config()
 
 const userController = {
     createUser : async (req : Request, res : Response ) => {
@@ -22,7 +25,9 @@ const userController = {
     },
     getAllProducts : async (req : Request, res : Response) => {
 
+
         try {
+            console.log(req.headers);
             const allProducts = await prisma.product.findMany();
             res.status(200).json(allProducts);
         } catch (error) {
@@ -124,9 +129,49 @@ const userController = {
            res.status(404).json(error); 
         }
     },
-    payment : async (req : Request, res : Response) => {
+    getOrder : async (req : Request, res : Response) => {
+        try {
+            const instance = new Razorpay({
+                key_id : <string>process.env.RAZOR_PAY_TEST_KEY_ID,
+                key_secret : <string>process.env.RAZOR_PAY_TEST_SECRET_KEY
 
+            });
+
+            const options = req.body;
+            const order = await instance.orders.create(options);
+
+            // if(!order) { 
+            //     return res.status(404).json({message : "Something went wrong while creating the order by razorpay"});
+            // }
+
+            res.status(200).json(order); 
+        } catch (error) {
+            res.status(500).json(error);
+        }
     },
+
+    validatePaymentSuccess : async (req : Request, res : Response ) => {
+        try {
+
+            const {razorpay_order_id , razorpay_payment_id, razorpay_signature } = req.body;
+
+            const sha = crypto.createHmac("sha256",<string>process.env.RAZOR_PAY_TEST_SECRET_KEY, );
+            sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+            const digest = sha.digest("hex");
+            if(digest !== razorpay_signature){
+                res.status(404).json({msg : "transaction is not legit "});
+            }
+
+            res.status(200).json({
+                message : "success",
+                order_id : razorpay_order_id, 
+                payment_id : razorpay_payment_id
+            })
+            
+        } catch (error) {
+            res.status(500).send("Internal server error ");
+        }
+    }
 }
 
 

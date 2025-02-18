@@ -6,7 +6,7 @@ import { useGetAdminProductsQuery } from '../../slices/apiSlice';
 const Home = () => {
     const {user} = useUser();
 
-    const { data : products = [] , isFetching, isSuccess} = useGetAdminProductsQuery();
+    const { data : products = [] } = useGetAdminProductsQuery();
     
 
     const modifiedProducts = products.map((product ) => {
