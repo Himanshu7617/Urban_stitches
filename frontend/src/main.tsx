@@ -6,7 +6,7 @@ import { store } from "./store/store.ts";
 import { Provider } from "react-redux";
 import { ClerkProvider, SignedIn } from "@clerk/clerk-react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./features/dashboard/dashboard.tsx";
+import Dashboard from "./features/dashboard/Dashboard.tsx";
 import Home from "./features/home/Home.tsx";
 import Admin from "./features/admin/Admin.tsx";
 import Product from "./features/products/Product.tsx";
@@ -46,6 +46,16 @@ createRoot(document.getElementById("root")!).render(
             element = {
               <SignedIn>
                 <Product/>
+              </SignedIn>
+            }
+            >
+
+            </Route>
+            <Route
+            path="/app"
+            element = {
+              <SignedIn>
+                <App/>
               </SignedIn>
             }
             >
